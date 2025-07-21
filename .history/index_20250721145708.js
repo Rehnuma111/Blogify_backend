@@ -26,7 +26,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
   origin: 'https://blogigy-frontend.onrender.com',
-  credentials: true 
+  credentials: true // if you use cookies or authentication headers
 }));app.use('/api/user', userRouter);
 app.use('/api/blog', blogRouter);
 app.use('/api/comment', commentRouter);
