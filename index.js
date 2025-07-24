@@ -24,8 +24,13 @@ const __dirname = path.resolve();
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors())
-
+app.use(cors({
+  origin: [
+    'https://blogigy-frontend.onrender.com/', 
+    'http://localhost:3000'
+  ],
+  credentials: true
+}));
 ;app.use('/api/user', userRouter);
 app.use('/api/blog', blogRouter);
 app.use('/api/comment', commentRouter);
