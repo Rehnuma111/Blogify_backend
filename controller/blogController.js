@@ -60,7 +60,8 @@ export const getAllBlogs = asyncHandler(async (req, res, next) => {
 // Post Blog : POST API -
 
 export const postBlog = asyncHandler(async (req, res, next) => {
-  const { blogTitle, blogCategory, blogImgFile, blogBody, user } = req.body;
+  const { blogTitle, blogCategory, blogImgFile, blogBody } = req.body;
+  const user = req.user;
 
   if (!user.isAdmin) {
     return next(
@@ -87,6 +88,9 @@ export const postBlog = asyncHandler(async (req, res, next) => {
       blog: addBlogPost,
     });
   } catch (error) {
+    if (error.code === 11000) {
+      return next(errorHandler("A blog with this title already exists!", 400));
+    }
     next(errorHandler(error));
   }
 });

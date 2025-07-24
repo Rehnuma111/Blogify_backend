@@ -9,8 +9,4 @@ blogRouter.post('/post-blog', verifyUserMiddleware, postBlog)
     .put('/update-blog/:blogid/:userid', verifyUserMiddleware, updateBlog)
 
 
-
-
-
-
 export default blogRouter;

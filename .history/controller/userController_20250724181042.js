@@ -114,7 +114,7 @@ export const loginUser = asyncHandler(async (req, res, next) => {
     return next(errorHandler("Invalid password", 401));
   }
 
-  const createToken = JWT.sign({ id: existUser.id, isAdmin: existUser.isAdmin }, process.env.JWT_TOKEN, {
+  const createToken = JWT.sign({ id: existUser.id }, process.env.JWT_TOKEN, {
     expiresIn: "30d",
   });
   const updateUser = await userModel.findByIdAndUpdate(
@@ -189,7 +189,7 @@ export const googleOAuth = asyncHandler(async (req, res, next) => {
   const user = await userModel.findOne({ email: email });
 
   if (user) {
-    const createToken = JWT.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.JWT_TOKEN, {
+    const createToken = JWT.sign({ id: user._id }, process.env.JWT_TOKEN, {
       expiresIn: "30d",
     });
     return res

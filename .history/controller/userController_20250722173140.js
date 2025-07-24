@@ -114,7 +114,7 @@ export const loginUser = asyncHandler(async (req, res, next) => {
     return next(errorHandler("Invalid password", 401));
   }
 
-  const createToken = JWT.sign({ id: existUser.id, isAdmin: existUser.isAdmin }, process.env.JWT_TOKEN, {
+  const createToken = JWT.sign({ id: existUser.id }, process.env.JWT_TOKEN, {
     expiresIn: "30d",
   });
   const updateUser = await userModel.findByIdAndUpdate(
@@ -189,7 +189,7 @@ export const googleOAuth = asyncHandler(async (req, res, next) => {
   const user = await userModel.findOne({ email: email });
 
   if (user) {
-    const createToken = JWT.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.JWT_TOKEN, {
+    const createToken = JWT.sign({ id: user._id }, process.env.JWT_TOKEN, {
       expiresIn: "30d",
     });
     return res
@@ -288,52 +288,30 @@ export const signOutUser = asyncHandler(async (req, res, next) => {
 export const userResetPassword = asyncHandler(async (req, res, next) => {
   const { email } = req.body;
 
-  if (!email) {
-    return next(errorHandler("Email is required", 400));
-  }
-
   try {
-    console.log("🔁 Initiating password reset for:", email);
-
-    const user = await userModel.findOne({ email });
+    const user = await userModel.findOne({ email: email });
 
     if (!user) {
-      return next(errorHandler("Oops, Email not found!", 404));
+      return next(errorHandler("Oops, Email is not found!", 401));
+    } else {
+      // Todo .......................................................................
+
+      const generateToken = await JWT.sign(
+        { _id: user._id },
+        process.env.JWT_TOKEN,
+        { expiresIn: "30d" }
+      );
+
+      const setPasswordToken = await userModel.findByIdAndUpdate(
+        { _id: user._id },
+        { resetPasswordToken: generateToken },
+        { new: true }
+      );
+
+      if (setPasswordToken) {
+      }
     }
-
-    // Generate password reset token (expires in 1 hour for security)
-    const resetToken = JWT.sign(
-      { _id: user._id },
-      process.env.JWT_TOKEN,
-      { expiresIn: "1h" }
-    );
-
-    // Set token and expiry in database
-    user.resetPasswordToken = resetToken;
-    user.resetPasswordExpires = Date.now() + 3600000; // 1 hour in ms
-
-    await user.save();
-
-    // Mock email send (replace with actual email function)
-    const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
-    console.log(`📧 Password reset email would be sent to ${email}: ${resetUrl}`);
-
-    // Example (Uncomment if you use a mailer utility)
-    // await sendEmail({
-    //   to: user.email,
-    //   subject: "Password Reset Request",
-    //   html: `<p>Click <a href="${resetUrl}">here</a> to reset your password.</p>`
-    // });
-
-    return res.status(200).json({
-      success: true,
-      message: "Password reset link has been sent to your email.",
-    });
-
-  } catch (error) {
-    console.error("❌ Error in userResetPassword:", error);
-    return next(errorHandler("Server Error. Please try again later.", 500));
-  }
+  } catch (error) {}
 });
 
 // GET API : public route :
