@@ -186,63 +186,67 @@ export const updateUser = asyncHandler(async (req, res, next) => {
 export const googleOAuth = asyncHandler(async (req, res, next) => {
   const { username, email, profilePicture } = req.body;
 
-  const user = await userModel.findOne({ email: email });
+  try {
+    let user = await userModel.findOne({ email });
 
-  if (user) {
-    const createToken = JWT.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.JWT_TOKEN, {
-      expiresIn: "30d",
-    });
-    return res
-      .status(200)
-      .cookie("accessToken", createToken, { httpOnly: true })
-      .json({
-        success: true,
-        message: "User has been successfully loggedIn",
-        user: user,
-      });
-  } else {
-    const generatePassword =
-      100 * Math.random().toString().replace(".", "") +
-      process.env.JWT_TOKEN.slice(20);
-
-    try {
-      const genSalt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(generatePassword, genSalt);
-      const modifiedName = username.toLowerCase().replace(/\s/g, "");
-
-      const loginGoogleUser = new userModel({
-        username: modifiedName,
-        email: email,
-        profilePicture: profilePicture,
-        password: hashedPassword,
-      });
-      await loginGoogleUser.save();
-
-      const createToken = JWT.sign(
-        { id: loginGoogleUser._id },
-        process.env.JWT_TOKEN
+    // If user exists, log in
+    if (user) {
+      const token = JWT.sign(
+        { id: user._id, isAdmin: user.isAdmin },
+        process.env.JWT_TOKEN,
+        { expiresIn: "30d" }
       );
-
-      const updateUser = await userModel.findByIdAndUpdate(
-        { _id: loginGoogleUser._id },
-        { token: createToken },
-        { new: true }
-      );
-
-      const { password, ...rest } = updateUser._doc;
 
       return res
         .status(200)
-        .cookie("accessToken", createToken, { httpOnly: true })
+        .cookie("accessToken", token, { httpOnly: true })
         .json({
           success: true,
-          message: "User has been loggedIn",
-          user: rest,
+          message: "User logged in successfully",
+          user,
         });
-    } catch (error) {
-      console.log(error);
-      return next(errorHandler(error));
     }
+
+    // Generate random password
+    const tempPassword =
+      100 * Math.random().toString().replace(".", "") +
+      process.env.JWT_TOKEN.slice(20);
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(tempPassword, salt);
+
+    const formattedUsername = username.toLowerCase().replace(/\s/g, "");
+
+    const newUser = new userModel({
+      username: formattedUsername,
+      email,
+      profilePicture,
+      password: hashedPassword,
+    });
+
+    const savedUser = await newUser.save();
+
+    const token = JWT.sign({ id: savedUser._id }, process.env.JWT_TOKEN, {
+      expiresIn: "30d",
+    });
+
+    // Optionally update user token in DB
+    savedUser.token = token;
+    await savedUser.save();
+
+    const { password, ...userWithoutPassword } = savedUser._doc;
+
+    return res
+      .status(200)
+      .cookie("accessToken", token, { httpOnly: true })
+      .json({
+        success: true,
+        message: "User registered and logged in via Google OAuth",
+        user: userWithoutPassword,
+      });
+  } catch (error) {
+    console.error("Google OAuth error:", error);
+    return next(errorHandler("OAuth login failed"));
   }
 });
 
