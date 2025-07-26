@@ -51,37 +51,68 @@ app.listen(PORT, () => {
 });
 
 const dummyBlogs = [
-    {
-      blogTitle: "Mastering React in 30 Days",
-      blogCategory: "Frontend",
-      blogImgFile: "https://via.placeholder.com/600x300.png?text=React+Blog",
-      blogBody: "This blog covers the fundamentals of React, from JSX to hooks, helping you master frontend development.",
-    },
-    {
-      blogTitle: "Node.js for Scalable Backend",
-      blogCategory: "Backend",
-      blogImgFile: "https://via.placeholder.com/600x300.png?text=Node+Blog",
-      blogBody: "Learn how to build RESTful APIs using Node.js, Express, and MongoDB in a scalable way.",
-    },
-    {
-      blogTitle: "10 Tips for Writing Clean Code",
-      blogCategory: "Best Practices",
-      blogImgFile: "https://via.placeholder.com/600x300.png?text=Clean+Code",
-      blogBody: "Follow these essential tips to improve the quality and readability of your code.",
-    },
-    {
-      blogTitle: "Understanding JavaScript Closures",
-      blogCategory: "JavaScript",
-      blogImgFile: "https://via.placeholder.com/600x300.png?text=JS+Closures",
-      blogBody: "Closures are a powerful feature in JavaScript. Learn what they are and how to use them effectively.",
-    },
-    {
-      blogTitle: "Tailwind CSS: Utility-First Magic",
-      blogCategory: "Frontend",
-      blogImgFile: "https://via.placeholder.com/600x300.png?text=Tailwind+CSS",
-      blogBody: "Tailwind CSS simplifies styling by providing utility classes. This blog helps you get started with it.",
-    },
-  ];
+  {
+    blogTitle: "The Power of TypeScript in Modern Web Development",
+    blogCategory: "Frontend",
+    blogImgFile: "https://via.placeholder.com/600x300.png?text=TypeScript+Blog",
+    blogBody: `TypeScript brings static typing to JavaScript, enhancing developer productivity. 
+It helps catch bugs early during development. 
+Modern frameworks like Angular and React benefit greatly from TypeScript. 
+It improves code readability and maintainability. 
+Start adopting TypeScript for more robust web applications.`,
+    userId: "687f7d64dcf666834043008c",
+    slug: "the-power-of-typescript-in-modern-web-development"
+  },
+  {
+    blogTitle: "Securing Your Node.js API Like a Pro",
+    blogCategory: "Backend",
+    blogImgFile: "https://via.placeholder.com/600x300.png?text=Node+Security",
+    blogBody: `Security is critical for any backend API. 
+Always validate and sanitize user input. 
+Use helmet and rate-limiting middleware for basic protection. 
+Implement JWT for secure authentication. 
+Keep dependencies updated to avoid known vulnerabilities.`,
+    userId: "687f7d64dcf666834043008c",
+    slug: "securing-your-node-js-api-like-a-pro"
+  },
+  {
+    blogTitle: "How to Build a Blog with MongoDB and Express",
+    blogCategory: "Full Stack",
+    blogImgFile: "https://via.placeholder.com/600x300.png?text=Mongo+Blog",
+    blogBody: `MongoDB and Express are a powerful duo for backend development. 
+Start by setting up routes and controllers. 
+Use Mongoose for schema definitions and database operations. 
+Implement RESTful endpoints for CRUD functionality. 
+Deploy using services like Render or Vercel for testing.`,
+    userId: "687f7d64dcf666834043008c",
+    slug: "how-to-build-a-blog-with-mongodb-and-express"
+  },
+  {
+    blogTitle: "Responsive Design with Flexbox and Grid",
+    blogCategory: "Frontend",
+    blogImgFile: "https://via.placeholder.com/600x300.png?text=Responsive+Design",
+    blogBody: `Flexbox and Grid make responsive layouts easier. 
+Use Flexbox for one-dimensional alignment. 
+Grid is ideal for two-dimensional designs. 
+Combine both for complex responsive pages. 
+Always test on different screen sizes for optimal UX.`,
+    userId: "687f7d64dcf666834043008c",
+    slug: "responsive-design-with-flexbox-and-grid"
+  },
+  {
+    blogTitle: "Boost Performance in React Apps",
+    blogCategory: "Frontend",
+    blogImgFile: "https://via.placeholder.com/600x300.png?text=React+Performance",
+    blogBody: `React apps can slow down with poor optimization. 
+Use memoization and lazy loading to reduce re-renders. 
+Avoid anonymous functions in props. 
+Split code using React.lazy and Suspense. 
+Monitor performance using React DevTools.`,
+    userId: "687f7d64dcf666834043008c",
+    slug: "boost-performance-in-react-apps"
+  }
+];
+
   
   // Seed Function
   const seedBlogs = async () => {
@@ -111,5 +142,5 @@ const dummyBlogs = [
     }
   };
   
-//   seedBlogs();
+  // seedBlogs();
   
